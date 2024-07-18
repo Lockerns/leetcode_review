@@ -6,20 +6,16 @@ using namespace std;
 class Solution
 {
 public:
-    vector<int> sortedSquares(vector<int> &nums)
-    {
-        int n = nums.size();
+    vector<int> sortedSquares(vector<int>& nums) {
+        vector<int> result(nums.size());
         int left = 0;
-        int right = n - 1;
-        vector<int> result;
-	    while(right >= left)
+        int right = nums.size() - 1;
+        for (int i = nums.size() - 1; i >= 0; i--)
         {
-            if (nums[left] * nums[left] > nums[right] * nums[right])
-            {
-                result.push_back(nums[left]*nums[left++]);
-            }
+            if(nums[right]*nums[right] > nums[left]*nums[left])
+                result[i] = nums[right]*nums[right--];
             else
-                result.push_back(nums[right]*nums[right--]);
+                result[i] = nums[left]*nums[left++];
         }
         return result;
     }
