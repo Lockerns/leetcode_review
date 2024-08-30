@@ -1,82 +1,67 @@
 #include <iostream>
 using namespace std;
 
-class Stack {
-private:
-    int* arr;          // 用于存储栈元素的数组
-    int topIndex;      // 指向栈顶元素的索引
-    int capacity;      // 栈的当前容量
+class MyStack {
+  public:
+    MyStack() {
+        capacity_ = 2;
+        top_index_ = -1;
+        arr_ = new int[capacity_];
+    }
 
-    // 私有方法，用于扩容数组
-    void resize(int newCapacity) {
-        int* newArr = new int[newCapacity];
-        for (int i = 0; i <= topIndex; i++) {
-            newArr[i] = arr[i];
+    virtual ~MyStack() {
+        delete[] arr_;
+    }
+
+    void push(int val) {
+        if (top_index_ == capacity_ - 1) {
+            resize(capacity_ * 2);
         }
-        delete[] arr;
-        arr = newArr;
-        capacity = newCapacity;
+        arr_[++top_index_] = val;
     }
 
-public:
-    // 构造函数，初始化栈
-    Stack() {
-        capacity = 2;    // 初始容量
-        arr = new int[capacity];
-        topIndex = -1;   // 初始化栈为空
-    }
-
-    // 析构函数，释放动态分配的内存
-    ~Stack() {
-        delete[] arr;
-    }
-
-    // 入栈操作
-    void push(int value) {
-        if (topIndex == capacity - 1) {
-            resize(capacity * 2);  // 容量不够时，扩展为原来的两倍
-        }
-        arr[++topIndex] = value;
-    }
-
-    // 出栈操作
-    int pop() {
-        if (isEmpty()) {
-            cout << "Stack underflow. Cannot pop from the stack.\n";
-            return -1; // 可以根据需求返回其他值
-        }
-        int value = arr[topIndex--];
-        
-        // 缩小容量，如果栈中的元素数目小于容量的四分之一
-        if (topIndex + 1 <= capacity / 4 && capacity > 2) {
-            resize(capacity / 2);
-        }
-        
-        return value;
-    }
-
-    // 查看栈顶元素
     int top() {
-        if (isEmpty()) {
-            cout << "Stack is empty. No top element.\n";
-            return -1; // 可以根据需求返回其他值
+        if (is_empty()) {
+            cout << "Stack is empty" << endl;
+            return -1;
         }
-        return arr[topIndex];
+        return arr_[top_index_];
     }
 
-    // 判断栈是否为空
-    bool isEmpty() {
-        return topIndex == -1;
+    int pop() {
+        if (is_empty()) {
+            cout << "Stack underflow." << endl;
+            return -1;
+        }
+        return arr_[top_index_--];
     }
 
-    // 返回栈的大小
+    bool is_empty() {
+        return top_index_ == -1;
+    }
+
     int size() {
-        return topIndex + 1;
+        return top_index_ + 1;
+    }
+
+  private:
+    int* arr_;
+    int top_index_;
+    int capacity_;
+
+    void resize(int new_capacity) {
+        int* new_arr = new int[new_capacity];
+        for (int i = 0; i <= top_index_; ++i) {
+            new_arr[i] = arr_[i];
+        }
+        delete[] arr_;
+        arr_ = new_arr;
+        capacity_ = new_capacity;
     }
 };
 
 int main() {
-    Stack stack;
+    MyStack stack;
 
     stack.push(10);
     stack.push(20);
