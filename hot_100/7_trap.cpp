@@ -5,52 +5,34 @@ using namespace std;
 class Solution {
 public:
     int trap(vector<int>& height) {
-        int i = 0, j = 0;
-        int sum = 0;
+        int result = 0;
+        int left = 0, right = height.size() - 1;
+        int left_max = 0, right_max = 0;
 
-        int hax = 0, max_num = 0;
-        for (int t = 0; t < height.size(); ++t)
+        while (left < right)
         {
-            if (height[t] > max_num)
+            left_max = max(left_max, height[left]);
+            right_max = max(right_max, height[right]);
+
+            if (height[left] < height[right])
             {
-                max_num = height[t];
-                hax = t;
-            } 
-        }
-        while (height[i] == 0 && i < hax) i++;
-        while (i < hax)
-        {
-            // if (height[i] != 0 && height[i + 1] != 0) continue;
-            while (i < hax && height[i] <= height[i + 1]) i++;
-            j = i + 1;
-            while(height[j] < height[i] && j <= hax)
-            {
-                sum += (height[i] - height[j]);
-                j++;
+                result += left_max - height[left];
+                left++;
             }
-            i = j - 1;
-        }
-        i = height.size() - 1;
-        while (i > hax)
-        {
-            // if (height[i] != 0 && height[i + 1] != 0) continue;
-            while (i > hax && height[i] <= height[i - 1]) i--;
-            j = i - 1;
-            while(height[j] < height[i] && j >= hax)
+            else
             {
-                sum += (height[i] - height[j]);
-                j--;
+                result += right_max - height[right];
+                right--;
             }
-            i = j + 1;
         }
-        return sum;
+        return result;
     }
 };
 
 int main()
 {
     Solution a;
-    vector<int> height = {2, 0, 2};
+    vector<int> height = {0,1,0,2,1,0,1,3,2,1,2,1};
     int sum = a.trap(height);
     cout << sum << endl;
     return 0;
