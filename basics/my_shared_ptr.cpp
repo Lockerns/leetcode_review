@@ -58,6 +58,7 @@ public:
 int main() {
     {
         SimpleSharedPtr<MyClass> ptr1(new MyClass());
+        // SimpleSharedPtr<MyClass> ptr1(new int(1)); // 编译报错，禁止隐式转化的原因
         {
             SimpleSharedPtr<MyClass> ptr2 = ptr1;
             ptr1->do_something();

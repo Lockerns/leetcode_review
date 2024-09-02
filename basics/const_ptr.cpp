@@ -5,7 +5,7 @@ int main(int argc, char const *argv[]){
     // 指针常量, 可以改变指向，但不能修改指向对象的值
     int a = 1;
     int b = 3;
-    int const *p;
+    const int* p;
     p = &a;
     cout << *p << endl;
     a = 2;
@@ -16,7 +16,7 @@ int main(int argc, char const *argv[]){
     // cout << *p << endl;
 
     // 常量指针，可以修改指向对象的值，但是不能修改指向
-    int *const q = &b;
+    int* const q = &b;
     // q = &a;  // 不能修改指向
     *q = 4;
     cout << *p << endl;

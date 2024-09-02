@@ -1,3 +1,7 @@
+// 用array实现栈
+// This program implements a stack using a dynamic array in C++. 
+// The stack supports basic operations like push, pop, top, and checks for empty status. 
+// It also dynamically resizes the underlying array when it reaches capacity.
 #include <iostream>
 using namespace std;
 

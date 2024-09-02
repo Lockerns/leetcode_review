@@ -1,23 +1,24 @@
 #include <iostream>
+
 using namespace std;
 
 template<typename T>
 class MySharedPtr {
   public:
-    explicit MySharedPtr(T* ptr = nullptr) : ptr_(ptr), count_(ptr ? new int(1) : nullptr) {
-        cout << "MySharedPtr constructor 1" << endl;
-    }
-
-    MySharedPtr(const MySharedPtr& other) : ptr_(other.ptr_), count_(other.count_) {
-        if (count_) {
-            ++(*count_);
+    // explicit MySharedPtr() : ptr_(nullptr), count_(nullptr) {}
+    explicit MySharedPtr(T* ptr) : ptr_(ptr), count_(ptr ? new int(1) : nullptr) {}
+    MySharedPtr(const MySharedPtr& other) {
+        if (other.ptr_) {
+            ptr_ = other.ptr_;
+            count_ = other.count_;
+            if (count_) {
+                ++(*count_);
+            }
         }
-        cout << "MySharedPtr constructor 2" << endl;
     }
-
     MySharedPtr& operator=(const MySharedPtr& other) {
-        if (this != &other) {
-            release();
+        release();
+        if (other.ptr_) {
             ptr_ = other.ptr_;
             count_ = other.count_;
             if (count_) {
@@ -27,53 +28,25 @@ class MySharedPtr {
         return *this;
     }
 
-    virtual ~MySharedPtr() {
+    ~MySharedPtr() {
         release();
-        cout << "MySharedPtr destructor" << endl;
     }
 
-    T& operator*() const { return *ptr_; }
-    T* operator->() const { return *ptr_; }
+    T& operator*() { return *ptr_; }
+    T* operator->() { return ptr_: }
     T* get() const { return ptr_; }
-
-    int use_count() const {
-        if (count_) {
-            return *count_;
-        }
-        else {
-            return 0;
-        }
-    }
+    int use_count() { return count_ ? *count_ : 0; }
 
   private:
     T* ptr_;
     int* count_;
-
     void release() {
-        if (count_ && --count_ == 0) {
-            delete ptr_;
-            delete count_;
-            cout << "Release memory" << endl;
-        }
+        delete ptr_;
+        delete count_;
         ptr_ = nullptr;
         count_ = nullptr;
     }
 };
-
-class MyClass {
-  public:
-    MyClass() { cout << "MyClass constructor" << endl; }
-    ~MyClass() { cout << "MyClass deconstructor" << endl; }
-    void DoSomething() { cout << "Do something" << endl; }
-};
-
-int main()
-{
-    MySharedPtr<MyClass> ptr1(new MyClass());
-
-    // MySharedPtr<MyClass> ptr2(ptr1);
-    {
-        // MySharedPtr<MyClass> ptr2 = ptr1;
-    }
+int main() {
     return 0;
 }
