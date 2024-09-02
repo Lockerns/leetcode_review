@@ -2,51 +2,68 @@
 
 using namespace std;
 
-template<typename T>
-class MySharedPtr {
+class MyStack {
   public:
-    // explicit MySharedPtr() : ptr_(nullptr), count_(nullptr) {}
-    explicit MySharedPtr(T* ptr) : ptr_(ptr), count_(ptr ? new int(1) : nullptr) {}
-    MySharedPtr(const MySharedPtr& other) {
-        if (other.ptr_) {
-            ptr_ = other.ptr_;
-            count_ = other.count_;
-            if (count_) {
-                ++(*count_);
-            }
-        }
-    }
-    MySharedPtr& operator=(const MySharedPtr& other) {
-        release();
-        if (other.ptr_) {
-            ptr_ = other.ptr_;
-            count_ = other.count_;
-            if (count_) {
-                ++(*count_);
-            }
-        }
-        return *this;
+    MyStack() {
+        capacity_ = 2;
+        arr_ = new int(capacity_);
+        top_indice_ = -1;
     }
 
-    ~MySharedPtr() {
-        release();
+    ~MyStack() {
+        delete arr_;
     }
 
-    T& operator*() { return *ptr_; }
-    T* operator->() { return ptr_: }
-    T* get() const { return ptr_; }
-    int use_count() { return count_ ? *count_ : 0; }
+    void push(int value) {
+        if (++top_indice_ > capacity_) {
+            resize(capacity_ * 2);
+        }
+        arr_[top_indice_] = value;
+    }
+
+    int pop() {
+        return arr_[top_indice_--];
+    }
+
+    int top() {
+        return arr_[top_indice_];
+    }
+
+    int size() {
+        return top_indice_ + 1;
+    }
+
+    bool is_empty() {
+        return top_indice_ == -1;
+    }
 
   private:
-    T* ptr_;
-    int* count_;
-    void release() {
-        delete ptr_;
-        delete count_;
-        ptr_ = nullptr;
-        count_ = nullptr;
+    int* arr_;
+    int top_indice_;
+    int capacity_;
+    void resize(int new_capacity) {
+        int* new_arr = new int(new_capacity);
+        for (int i = 0; i < top_indice_; ++i) {
+            new_arr[i] = arr_[i];
+        }
+        delete arr_;
+        arr_ = new_arr;
     }
 };
+
 int main() {
+    MyStack stack;
+
+    stack.push(10);
+    stack.push(20);
+    stack.push(30);
+
+    cout << "Top element is: " << stack.top() << endl;
+
+    stack.pop();
+    cout << "Top element after pop is: " << stack.top() << endl;
+
+    cout << "Stack size is: " << stack.size() << endl;
+
     return 0;
 }
