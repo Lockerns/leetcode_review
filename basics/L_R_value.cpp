@@ -18,18 +18,20 @@ class MyStr {
     // MyStr(char* s) : str_(s), length_(s ? strlen(s) : 0) {}
     MyStr(const char* s) {
         length_ = strlen(s);
-        str_ = new char[length_];
+        str_ = new char[length_ + 1];
         for (int i = 0; i < length_; ++i) {
             *(str_ + i) = *(s + i);
         }
+        *(str_ + length_) = '\0';
         cout << "char* s" << endl;
     }
     MyStr(const MyStr& other) {
-        str_ = new char[other.length_];
+        str_ = new char[other.length_ + 1];
         length_ = other.length_;
         for (int i = 0; i < length_; ++i) {
             *(str_ + i) = *(other.str_ + i);
         }
+        *(str_ + length_) = '\0';
         cout << "copy" << endl;
     }
     MyStr(MyStr&& other) : str_(other.str_), length_(other.length_) {
@@ -38,11 +40,16 @@ class MyStr {
         cout << "move" << endl;
     }
     MyStr& operator=(const MyStr& other) {
-        str_ = new char[other.length_];
+        if (this == &other) {
+            return *this;
+        }
+        clear();
+        str_ = new char[other.length_ + 1];
         length_ = other.length_;
         for (int i = 0; i < length_; ++i) {
             *(str_ + i) = *(other.str_ + i);
         }
+        *(str_ + length_) = '\0';
         cout << "assign" << endl;
         return *this;
     }
@@ -52,11 +59,13 @@ class MyStr {
         }
     }
 
-    void print() {
-        for (int i = 0; i < length_; ++i) {
-            cout << *(str_ + i);
+    friend ostream& operator<<(ostream& os, const MyStr& str) {
+        if (str.str_) {
+            os << str.str_;
+            return os;
+        } else {
+            return os;
         }
-        cout << endl;
     }
 
     size_t size() {
@@ -64,7 +73,7 @@ class MyStr {
     }
 
     void clear() {
-        delete str_;
+        delete[] str_;
         str_ = nullptr;
         length_ = 0;
     }
@@ -102,21 +111,17 @@ int main() {
     if (true) {
         MyStr a;
         a = "123";
-        cout << "*******" << endl;
         MyStr b(a);
         MyStr c = a;
         MyStr d(move(a));
-        a.print();
-        cout << "a length: " << a.size() << endl;
-        b.print();
-        cout << "b length: " << b.size() << endl;
-        c.print();
-        cout << "c length: " << c.size() << endl;
-        d.print();
-        cout << "d length: " << d.size() << endl;
 
+        cout << "a:" << a << endl;
+        cout << "b:" << b << endl;
+        cout << "c:" << c << endl;
+        cout << "d:" << d << endl;
         /*
         default
+        char* s
         assign
         copy
         copy
